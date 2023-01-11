@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import {P2pServer} from "./p2p-server";
 import {Wallet} from "../wallet";
 import {TransactionPool} from "../wallet/transaction-pool";
+import {Transaction} from "../wallet/transaction";
 
 const HTTP_PORT=process.env.HTTP_PORT||3001
 
@@ -11,7 +12,7 @@ const app=express()
 const bc=new Blockchain()
 const wallet=new Wallet()
 const tp=new TransactionPool()
-const p2pServer=new P2pServer(bc)
+const p2pServer=new P2pServer(bc,tp)
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:false}))
@@ -31,6 +32,7 @@ app.get('/transactions',(req,res)=>{
 app.post('/transaction',(req,res)=>{
     const {recipient,amount}=req.body
     const transaction=wallet.createTransaction(recipient,amount,tp)
+    p2pServer.broadcastTransaction(transaction as Transaction)
     res.redirect('/transactions')
 })
 
