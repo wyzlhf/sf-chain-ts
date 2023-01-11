@@ -1,6 +1,8 @@
 import {INITIAL_BALANCE} from "../config";
 import {ChainUtil} from "../chain-util";
-import {ec} from "elliptic";
+import {BNInput, ec} from "elliptic";
+import {Output} from "./transaction";
+// import BNInput from ""
 export class Wallet{
     balance:number
     keyPair:ec.KeyPair
@@ -15,5 +17,8 @@ export class Wallet{
         publicKey:${this.publicKey.toString()}
         balance  :${this.balance}
         keyPari  :${this.keyPair.getPrivate()}`
+    }
+    public sign(dataHash:string):ec.Signature{
+        return this.keyPair.sign(dataHash)
     }
 }
