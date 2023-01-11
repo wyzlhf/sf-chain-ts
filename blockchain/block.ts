@@ -1,8 +1,8 @@
-import SHA256 from "crypto-js/sha256";
+// import SHA256 from "crypto-js/sha256";
 import {DIFFICULTY, MINE_RATE} from "../config";
 import {ChainUtil} from "../chain-util";
 
-// interface Block{
+// interface IBlock{
 //     index:number
 //     timestamp:number
 //     data:string

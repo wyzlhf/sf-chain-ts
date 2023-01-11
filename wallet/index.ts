@@ -1,7 +1,7 @@
 import {INITIAL_BALANCE} from "../config";
 import {ChainUtil} from "../chain-util";
-import {BNInput, ec} from "elliptic";
-import {Output, Transaction} from "./transaction";
+import {ec} from "elliptic";
+import {Transaction} from "./transaction";
 import {TransactionPool} from "./transaction-pool";
 // import BNInput from ""
 export class Wallet{

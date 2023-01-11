@@ -1,10 +1,6 @@
 import {ChainUtil} from "../chain-util";
 import {Wallet} from "./index";
 import {ec} from "elliptic";
-// interface Output{
-//     [amount: string]:number,
-//     address:string
-// }
 export interface Output{
     amount:number,
     address:string
