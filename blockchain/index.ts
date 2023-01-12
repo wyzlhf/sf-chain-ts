@@ -1,4 +1,5 @@
 import {Block} from "./block";
+import {Transaction} from "../wallet/transaction";
 
 export class Blockchain {
     chain: Block[]

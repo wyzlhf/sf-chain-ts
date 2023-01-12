@@ -1,21 +1,14 @@
 // import SHA256 from "crypto-js/sha256";
 import {DIFFICULTY, MINE_RATE} from "../config";
 import {ChainUtil} from "../chain-util";
+import {Transaction} from "../wallet/transaction";
 
-// interface IBlock{
-//     index:number
-//     timestamp:number
-//     data:string
-//     nonce:number
-//     hash:string
-//     previousBlockHash:string
-// }
 export class Block {
-    // readonly hash:string
     readonly timestamp: number
     readonly lastHash: string
     readonly hash: string
-    data: string
+    // data: string
+    transaction:Transaction
     nonce: number
     difficulty: number
 
@@ -24,14 +17,16 @@ export class Block {
         timestamp: number,
         lastHash: string,
         hash: string,
-        data: string,
+        // data: string,
+        transaction:Transaction,
         nonce: number,
         difficulty: number
     ) {
         this.timestamp = timestamp
         this.lastHash = lastHash
         this.hash = hash
-        this.data = data
+        // this.data = data
+        this.transaction=transaction
         this.nonce = nonce
         this.difficulty=difficulty||DIFFICULTY
     }
@@ -43,7 +38,7 @@ export class Block {
         Hash      :${this.hash.substring(0, 10)}
         Nonce     :${this.nonce}
         Difficulty:${this.difficulty}
-        Data      :${this.data}`
+        Data      :${this.transaction}`
     }
 
     public static genesis(): Block {

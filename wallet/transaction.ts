@@ -2,27 +2,32 @@ import {ChainUtil} from "../chain-util";
 import {Wallet} from "./index";
 import {ec} from "elliptic";
 import {MINING_REWARD} from "../config";
-export interface Output{
+export interface IOutput{
     amount:number,
     address:string
 }
-interface Input{
+interface IInput{
     timestamp:number,
     amount:number,
     address:string,
     signature:ec.Signature
 }
+interface ITransaction{
+    id:string,
+    input:IInput,
+    output:IOutput
+}
 export class Transaction{
     id:string
-    input: Input|null
-    outputs:Output[]
+    input: IInput|null
+    outputs:IOutput[]
     constructor() {
         this.id=ChainUtil.id()
         this.input= null
         this.outputs=[]
     }
     public update(senderWallet:Wallet,recipient:string,amount:number):Transaction|undefined{
-        const senderOutput=<Output>this.outputs.find(output=>output.address===senderWallet.publicKey)
+        const senderOutput=<IOutput>this.outputs.find(output=>output.address===senderWallet.publicKey)
         if(amount>senderOutput.amount){
             console.log(`Amount:${amount} exceeds balance.`)
             return
@@ -32,7 +37,7 @@ export class Transaction{
         Transaction.signTransaction(this,senderWallet)
         return this
     }
-    public static transactionWithOutputs(senderWallet:Wallet,outputs:Output[]):Transaction{
+    public static transactionWithOutputs(senderWallet:Wallet,outputs:IOutput[]):Transaction{
         const transaction=new this()
         transaction.outputs.push(...outputs)
         Transaction.signTransaction(transaction,senderWallet)
