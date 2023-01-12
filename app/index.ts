@@ -35,6 +35,9 @@ app.post('/transaction',(req,res)=>{
     p2pServer.broadcastTransaction(transaction as Transaction)
     res.redirect('/transactions')
 })
+app.get('/public-key',(req,res)=>{
+    res.json({publicKey:wallet.publicKey})
+})
 
 app.listen(HTTP_PORT,():void=>{
     console.log(`Listening on port ${HTTP_PORT}`)
