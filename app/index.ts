@@ -5,6 +5,7 @@ import {P2pServer} from "./p2p-server";
 import {Wallet} from "../wallet";
 import {TransactionPool} from "../wallet/transaction-pool";
 import {Transaction} from "../wallet/transaction";
+import {Miner} from "./miner";
 
 const HTTP_PORT=process.env.HTTP_PORT||3001
 
@@ -13,6 +14,7 @@ const bc=new Blockchain()
 const wallet=new Wallet()
 const tp=new TransactionPool()
 const p2pServer=new P2pServer(bc,tp)
+const miner=new Miner(bc,tp,wallet,p2pServer)
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended:false}))
@@ -37,6 +39,11 @@ app.post('/transaction',(req,res)=>{
 })
 app.get('/public-key',(req,res)=>{
     res.json({publicKey:wallet.publicKey})
+})
+app.get('/mine-transactions',(req,res)=>{
+    const block=miner.mine()
+    console.log(`New block added:${block.toString()}`)
+    res.redirect('/blocks')
 })
 
 app.listen(HTTP_PORT,():void=>{

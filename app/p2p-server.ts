@@ -7,7 +7,8 @@ const P2P_PORT: number = Number(process.env.P2P_PORT) || 5001
 const peers = process.env.PEERS ? process.env.PEERS.split(',') : []
 const MESSAGE_TYPES:{[index:string]:string}={
     chain:'CHAIN',
-    transaction:'TRANSACTION'
+    transaction:'TRANSACTION',
+    clear_transactions:'CLEAR_TRANSACTIONS'
 }
 
 export class P2pServer {
@@ -30,7 +31,7 @@ export class P2pServer {
         console.log(`Listening for peer-to-peer connections on:${P2P_PORT}`)
     }
 
-    private connectSocket(socket: WebSocket.WebSocket) {
+    private connectSocket(socket: WebSocket.WebSocket):void {
         this.sockets.push(socket)
         console.log('Socket connected.')
         this.messageHandler(socket)
@@ -38,7 +39,7 @@ export class P2pServer {
         this.sendChain(socket)
     }
 
-    private connectToPeers() {
+    private connectToPeers():void {
         peers.forEach(peer => {
             const socket = new WebSocket(peer)
             socket.on('open', () => {
@@ -47,7 +48,7 @@ export class P2pServer {
         })
     }
 
-    private messageHandler(socket: WebSocket.WebSocket) {
+    private messageHandler(socket: WebSocket.WebSocket):void {
         socket.on('message',(message:WebSocket.RawData)=>{
             const data=JSON.parse(String(message))
             // console.log('data',data)
@@ -59,27 +60,37 @@ export class P2pServer {
                 case MESSAGE_TYPES.transaction:
                     this.transactionPool.updateOrAddTransaction(data.transaction)
                     break
+                case MESSAGE_TYPES.clear_transactions:
+                    this.transactionPool.clear()
+                    break
             }
         })
     }
 
-    private sendChain(socket: WebSocket.WebSocket) {
+    private sendChain(socket: WebSocket.WebSocket):void {
         socket.send(JSON.stringify({
             type:MESSAGE_TYPES.chain,
             chain:this.blockchain.chain
         }))
     }
-    public syncChains(){
+    public syncChains():void{
         this.sockets.forEach(socket=>{this.sendChain(socket)})
     }
     public broadcastTransaction(transaction:Transaction):void{
         this.sockets.forEach(socket=>this.sendTransaction(socket,transaction))
     }
 
-    private sendTransaction(socket: WebSocket.WebSocket,transaction:Transaction) {
+    private sendTransaction(socket: WebSocket.WebSocket,transaction:Transaction):void {
         socket.send(JSON.stringify({
             type:MESSAGE_TYPES.transaction,
             transaction
         }))
+    }
+    public broadcastClearTransactions():void{
+        this.sockets.forEach(socket=>{
+            socket.send(JSON.stringify({
+                type:MESSAGE_TYPES.clear_transactions
+            }))
+        })
     }
 }

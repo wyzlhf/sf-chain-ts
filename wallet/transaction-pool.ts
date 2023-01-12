@@ -34,4 +34,7 @@ export class TransactionPool{
             return transaction
         })
     }
+    public clear():void{
+        this.transactions=[]
+    }
 }
