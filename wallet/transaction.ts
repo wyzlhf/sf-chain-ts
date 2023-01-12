@@ -2,20 +2,15 @@ import {ChainUtil} from "../chain-util";
 import {Wallet} from "./index";
 import {ec} from "elliptic";
 import {MINING_REWARD} from "../config";
-export interface IOutput{
-    amount:number,
-    address:string
-}
 interface IInput{
     timestamp:number,
     amount:number,
     address:string,
     signature:ec.Signature
 }
-interface ITransaction{
-    id:string,
-    input:IInput,
-    output:IOutput
+interface IOutput{
+    amount:number,
+    address:string
 }
 export class Transaction{
     id:string

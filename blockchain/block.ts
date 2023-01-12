@@ -8,7 +8,7 @@ export class Block {
     readonly lastHash: string
     readonly hash: string
     // data: string
-    transaction:Transaction
+    data:Transaction[]
     nonce: number
     difficulty: number
 
@@ -18,7 +18,7 @@ export class Block {
         lastHash: string,
         hash: string,
         // data: string,
-        transaction:Transaction,
+        data:Transaction[],
         nonce: number,
         difficulty: number
     ) {
@@ -26,7 +26,7 @@ export class Block {
         this.lastHash = lastHash
         this.hash = hash
         // this.data = data
-        this.transaction=transaction
+        this.data=data
         this.nonce = nonce
         this.difficulty=difficulty||DIFFICULTY
     }
@@ -38,14 +38,15 @@ export class Block {
         Hash      :${this.hash.substring(0, 10)}
         Nonce     :${this.nonce}
         Difficulty:${this.difficulty}
-        Data      :${this.transaction}`
+        Data      :${this.data}`
     }
 
     public static genesis(): Block {
-        return new this(0, '-----', 'f1r57-h45h', '[]', 0,DIFFICULTY)
+        const data:Transaction[]=[]
+        return new this(0, '-----', 'f1r57-h45h', data, 0,DIFFICULTY)
     }
 
-    public static mineBlock(lastBlock: Block, data: string): Block {
+    public static mineBlock(lastBlock: Block, data: Transaction[]): Block {
         let hash: string
         let timestamp: number
         // const timestamp:number=Date.now()
@@ -63,7 +64,7 @@ export class Block {
         return new this(timestamp, lastHash, hash, data, nonce,difficulty)
     }
 
-    private static hash(timestamp: number, lastHash: string, data: string, nonce: number,difficulty:number): string {
+    private static hash(timestamp: number, lastHash: string, data: Transaction[], nonce: number,difficulty:number): string {
         return ChainUtil.hash(`${timestamp}${lastHash}${data}${nonce}${difficulty}`).toString()
     }
 

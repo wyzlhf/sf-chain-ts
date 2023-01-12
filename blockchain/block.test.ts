@@ -1,10 +1,13 @@
 import {Block} from "./block";
 import {DIFFICULTY} from "../config";
+import {data} from "../struct";
+import {Transaction} from "../wallet/transaction";
 
 describe('Block', function () {
     let data:string,lastBlock:Block,block:Block
     beforeEach(()=>{
-        data='bar'
+        // data='bar'
+        let data:Transaction[]=[]
         lastBlock=Block.genesis()
         block=Block.mineBlock(lastBlock,data)
     })
