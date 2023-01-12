@@ -5,7 +5,7 @@ export class TransactionPool{
     constructor() {
         this.transactions=[]
     }
-    updateOrAddTransaction(transaction:Transaction):void{
+    public updateOrAddTransaction(transaction:Transaction):void{
         let transactionWitId=this.transactions.find(t=>t.id===transaction.id)
         if(transactionWitId){
             this.transactions[this.transactions.indexOf(transactionWitId)]=transaction
@@ -14,7 +14,24 @@ export class TransactionPool{
         }
     }
 
-    existingTransaction(publicKey: string):Transaction {
+    public existingTransaction(publicKey: string):Transaction {
         return this.transactions.find(t=>t.input?.address===publicKey) as Transaction
+    }
+
+    public validTransactions():Transaction[] {
+        return this.transactions.filter(transaction=>{
+            const outputTotal=transaction.outputs.reduce((total,output)=>{
+                return total+output.amount
+            },0)
+            if (transaction.input?.amount!==outputTotal){
+                console.log(`Invalid transaction from ${transaction.input?.address}`)
+                return
+            }
+            if(!Transaction.verifyTransaction(transaction)){
+                console.log(`Invalid signature from ${transaction.input.address}`)
+                return;
+            }
+            return transaction
+        })
     }
 }
